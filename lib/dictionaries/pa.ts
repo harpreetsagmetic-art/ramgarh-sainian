@@ -1,0 +1,35 @@
+export const pa = {
+  site: {
+    name: "ਰਾਮਗੜ੍ਹ ਸੈਣੀਆਂ",
+    sub: "ਸੈਣੀ ਮਾਜਰਾ",
+    tagline: "ਸਾਡਾ ਪਿੰਡ, ਸਾਡੀ ਪਛਾਣ",
+    location: "ਤਹਿਸੀਲ ਤੇ ਜ਼ਿਲ੍ਹਾ ਫ਼ਤਿਹਗੜ੍ਹ ਸਾਹਿਬ, ਪੰਜਾਬ",
+  },
+  nav: {
+    home: "ਮੁੱਖ ਪੰਨਾ",
+    village: "ਪਿੰਡ",
+    gurudwara: "ਗੁਰਦੁਆਰਾ",
+    notices: "ਸੂਚਨਾਵਾਂ",
+    gallery: "ਗੈਲਰੀ",
+    donate: "ਦਾਨ",
+    contact: "ਸੰਪਰਕ",
+  },
+  home: {
+    greeting: "ਸਤ ਸ੍ਰੀ ਅਕਾਲ",
+    welcome: "ਪਿੰਡ ਵਿੱਚ ਜੀ ਆਇਆਂ ਨੂੰ",
+    ctaGurudwara: "ਗੁਰਦੁਆਰਾ ਸਾਹਿਬ",
+    ctaDonate: "ਦਾਨ ਕਰੋ",
+    quick: "ਜਲਦੀ ਪਹੁੰਚ",
+    latestNotices: "ਤਾਜ਼ਾ ਸੂਚਨਾਵਾਂ",
+    noNotices: "ਅਜੇ ਕੋਈ ਸੂਚਨਾ ਨਹੀਂ ਹੈ।",
+    weatherTitle: "ਅੱਜ ਦਾ ਮੌਸਮ",
+    weatherSoon: "ਮੌਸਮ ਦੀ ਜਾਣਕਾਰੀ ਜਲਦੀ ਆ ਰਹੀ ਹੈ।",
+    donateTitle: "ਸੇਵਾ ਵਿੱਚ ਹਿੱਸਾ ਪਾਓ",
+    donateText: "ਤੁਹਾਡਾ ਦਾਨ ਪਿੰਡ ਅਤੇ ਗੁਰਦੁਆਰਾ ਸਾਹਿਬ ਦੀ ਸੇਵਾ ਲਈ ਵਰਤਿਆ ਜਾਂਦਾ ਹੈ।",
+  },
+  common: {
+    comingSoon: "ਇਹ ਪੰਨਾ ਜਲਦੀ ਤਿਆਰ ਹੋ ਰਿਹਾ ਹੈ।",
+    switchTo: "English",
+    rights: "ਸਾਰੇ ਹੱਕ ਰਾਖਵੇਂ ਹਨ।",
+  },
+};
