@@ -85,13 +85,13 @@ export const labels = {
 
 // ⚠️ Sab placeholder hai. Asli jaankari gaon se ikatthi karke badalna.
 export const site = {
-  upiId: "sainiharpreet906@okicici",
+  upiId: "testing@okicici",
   payee: {
     pa: "ਗੁਰਦੁਆਰਾ ਸਾਹਿਬ ਪ੍ਰਬੰਧਕ ਕਮੇਟੀ",
     en: "Gurudwara Sahib Management Committee",
   },
-  phone: "+919501669879",
-  phoneShow: "+91 9501669879",
+  phone: "+919898989898",
+  phoneShow: "+91 9898989898",
   mapUrl:
     "https://maps.app.goo.gl/bdmvC9rpRBs8nmup9",
 };
