@@ -1,7 +1,8 @@
+import TodayDate from "@/components/TodayDate";
 import { geo, labels, pick } from "@/lib/content";
 import { getDictionary, type Locale } from "@/lib/i18n";
 import { farmTips, getWeather, weatherInfo } from "@/lib/weather";
-import { CloudRain, Droplets, Sprout, Wind } from "lucide-react";
+import { CloudRain, Droplets, MapPin, Sprout, Wind } from "lucide-react";
 
 export default async function WeatherCard({ locale }: { locale: Locale }) {
   const t = getDictionary(locale);
@@ -20,12 +21,21 @@ export default async function WeatherCard({ locale }: { locale: Locale }) {
   const today = w.days[0];
   const tips = farmTips(w);
   const dayName = (iso: string) =>
-    new Date(iso).toLocaleDateString(locale === "pa" ? "pa-IN" : "en-IN", { weekday: "short", timeZone: "UTC" });
+    new Date(iso).toLocaleDateString(locale === "pa" ? "pa-IN" : "en-IN", {
+      weekday: "short",
+      timeZone: "UTC",
+    });
 
   return (
     <div className="rounded-2xl bg-white p-5 shadow-sm">
       <h2 className="text-lg font-bold">{t.home.weatherTitle}</h2>
-
+      <p className="mt-1 flex items-center gap-1 text-sm text-navy/70">
+        <MapPin size={14} className="text-saffron" /> {t.site.name},{" "}
+        {t.site.sub}
+      </p>
+      <p className="text-sm text-navy/70">
+        <TodayDate locale={locale} />
+      </p>
       <div className="mt-3 flex items-center gap-4">
         <span className="text-5xl">{now.emoji}</span>
         <div>
@@ -46,18 +56,25 @@ export default async function WeatherCard({ locale }: { locale: Locale }) {
         <div className="rounded-xl bg-cream p-2">
           <Droplets size={18} className="mx-auto text-saffron" />
           <p className="font-bold">{Math.round(w.current.humidity)}%</p>
-          <p className="text-xs text-navy/60">{pick(locale, labels.humidity)}</p>
+          <p className="text-xs text-navy/60">
+            {pick(locale, labels.humidity)}
+          </p>
         </div>
         <div className="rounded-xl bg-cream p-2">
           <CloudRain size={18} className="mx-auto text-saffron" />
           <p className="font-bold">{Math.round(today.rainProb)}%</p>
-          <p className="text-xs text-navy/60">{pick(locale, labels.rainChance)}</p>
+          <p className="text-xs text-navy/60">
+            {pick(locale, labels.rainChance)}
+          </p>
         </div>
       </div>
 
       <div className="mt-3 grid grid-cols-2 gap-2 text-sm">
         {w.days.slice(1).map((d) => (
-          <div key={d.date} className="flex items-center justify-between rounded-xl border border-navy/10 px-3 py-2">
+          <div
+            key={d.date}
+            className="flex items-center justify-between rounded-xl border border-navy/10 px-3 py-2"
+          >
             <span>{dayName(d.date)}</span>
             <span>
               {weatherInfo(d.code).emoji} {Math.round(d.max)}°
@@ -75,11 +92,18 @@ export default async function WeatherCard({ locale }: { locale: Locale }) {
             <li key={i}>{pick(locale, tip)}</li>
           ))}
         </ul>
-        <p className="mt-2 text-xs text-navy/60">{pick(locale, labels.tipsNote)}</p>
+        <p className="mt-2 text-xs text-navy/60">
+          {pick(locale, labels.tipsNote)}
+        </p>
       </div>
 
       <p className="mt-3 text-right text-xs text-navy/50">
-        <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer" className="underline">
+        <a
+          href="https://open-meteo.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline"
+        >
           Weather data by Open-Meteo.com
         </a>
       </p>

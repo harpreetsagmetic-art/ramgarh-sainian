@@ -1,8 +1,8 @@
 import { nri, pick } from "@/lib/content";
 import type { Locale } from "@/lib/i18n";
-import { Globe, GraduationCap, Heart, Landmark, TreePine } from "lucide-react";
+import { Globe, Heart, Landmark } from "lucide-react";
 
-const icons = [Landmark, TreePine, GraduationCap, Heart];
+const icons = [Landmark, Heart];
 
 export default function NriSection({ locale }: { locale: Locale }) {
   return (

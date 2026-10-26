@@ -1,7 +1,7 @@
 import Container from "@/components/Container";
 import PageBanner from "@/components/PageBanner";
 import UpiPay from "@/components/UpiPay";
-import { accounts, inr, labels, pick, site } from "@/lib/content";
+import { labels, pick, site } from "@/lib/content";
 import { getDictionary, isLocale } from "@/lib/i18n";
 import { notFound } from "next/navigation";
 
@@ -35,7 +35,7 @@ export default async function DonatePage({ params }: { params: Promise<{ locale:
         />
 
         {/* Donation accounts (transparency) */}
-        <section className="space-y-4">
+        {/* <section className="space-y-4">
           <h2 className="text-xl font-bold">{pick(locale, labels.accounts)}</h2>
           <p className="rounded-xl bg-gold/30 p-3 text-sm">{pick(locale, labels.sampleData)}</p>
 
@@ -72,7 +72,7 @@ export default async function DonatePage({ params }: { params: Promise<{ locale:
               </div>
             );
           })}
-        </section>
+        </section> */}
       </Container>
     </>
   );

@@ -1,24 +1,34 @@
 import Container from "@/components/Container";
 import NriSection from "@/components/NriSection";
 import PageBanner from "@/components/PageBanner";
-import { achievements, labels, pick, village } from "@/lib/content";
+import { labels, pick, village } from "@/lib/content";
+import { admin, census, dataSources, projection, villageAbout, x } from "@/lib/extra";
 import { getDictionary, isLocale } from "@/lib/i18n";
-import { GraduationCap, Shield, Stethoscope, Store, Tractor, Trophy, User } from "lucide-react";
+import { User } from "lucide-react";
 import { notFound } from "next/navigation";
-
-const achIcons = { student: GraduationCap, sport: Trophy, service: Shield } as const;
-
-const dirCats = [
-  { Icon: Stethoscope, label: { pa: "ਡਾਕਟਰ / ਸਿਹਤ", en: "Doctors / Health" } },
-  { Icon: Store, label: { pa: "ਦੁਕਾਨਾਂ", en: "Shops" } },
-  { Icon: Tractor, label: { pa: "ਖੇਤੀ ਸੰਦ / ਮਸ਼ੀਨਰੀ", en: "Farm equipment" } },
-  { Icon: GraduationCap, label: { pa: "ਅਧਿਆਪਕ / ਪੜ੍ਹਾਈ", en: "Teachers / Education" } },
-];
 
 export default async function VillagePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   const t = getDictionary(locale);
+
+  const stats = [
+    { label: x.population, value: String(census.population) },
+    { label: x.households, value: String(census.households) },
+    { label: x.literacy, value: `${census.literacyPct}%` },
+    { label: x.sexRatio, value: String(census.sexRatio) },
+    { label: x.children, value: String(census.children) },
+    { label: x.workers, value: String(census.workers) },
+  ];
+
+  const adminRows = [
+    { label: x.pin, value: admin.pin },
+    { label: x.postOffice, value: pick(locale, admin.postOffice) },
+    { label: x.censusCode, value: admin.censusCode },
+    { label: x.gramPanchayat, value: pick(locale, admin.gramPanchayat) },
+    { label: x.tehsil, value: pick(locale, admin.tehsil) },
+    { label: x.district, value: pick(locale, admin.district) },
+  ];
 
   return (
     <>
@@ -27,20 +37,74 @@ export default async function VillagePage({ params }: { params: Promise<{ locale
         {/* About */}
         <section>
           <h2 className="mb-2 text-xl font-bold">{pick(locale, labels.about)}</h2>
-          <p className="leading-relaxed text-navy/80">{pick(locale, village.about)}</p>
+          <p className="leading-relaxed text-navy/80">{pick(locale, villageAbout)}</p>
         </section>
 
-        {/* Facts */}
+        {/* Census 2011 */}
         <section>
-          <h2 className="mb-3 text-xl font-bold">{pick(locale, labels.glance)}</h2>
-          <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-            {village.facts.map((f, i) => (
+          <h2 className="text-xl font-bold">{pick(locale, labels.glance)}</h2>
+          <p className="mb-3 text-sm text-navy/60">{pick(locale, x.census)}</p>
+          <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
+            {stats.map((s, i) => (
               <div key={i} className="rounded-2xl bg-white p-4 text-center shadow-sm">
-                <p className="text-2xl font-bold text-saffron">{f.value}</p>
-                <p className="text-sm text-navy/70">{pick(locale, f.label)}</p>
+                <p className="text-2xl font-bold text-saffron">{s.value}</p>
+                <p className="text-sm text-navy/70">{pick(locale, s.label)}</p>
               </div>
             ))}
           </div>
+          <p className="mt-3 text-xs text-navy/60">{pick(locale, x.censusNote)}</p>
+        </section>
+
+        {/* Projected 2026 */}
+        <section>
+          <h2 className="text-xl font-bold">{pick(locale, x.projectedTitle)}</h2>
+          <p className="mb-3 text-sm text-navy/60">{pick(locale, x.projectedNote)}</p>
+          <div className="overflow-x-auto rounded-2xl bg-white shadow-sm">
+            <table className="w-full min-w-[420px] text-sm">
+              <thead>
+                <tr className="border-b border-navy/10 text-left text-navy/60">
+                  <th className="p-3 font-medium">{pick(locale, x.indicator)}</th>
+                  <th className="p-3 text-right font-medium">2011</th>
+                  <th className="p-3 text-right font-medium">2026 *</th>
+                  <th className="p-3 text-right font-medium">{pick(locale, x.change)}</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-navy/10">
+                {projection.map((r, i) => (
+                  <tr key={i}>
+                    <td className="p-3 font-medium">{pick(locale, r.label)}</td>
+                    <td className="p-3 text-right">{r.y2011}</td>
+                    <td className="p-3 text-right font-bold text-saffron">{r.y2026}</td>
+                    <td className="p-3 text-right text-navy/70">{r.change ?? "—"}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        {/* Administrative details */}
+        <section>
+          <h2 className="mb-3 text-xl font-bold">{pick(locale, x.adminTitle)}</h2>
+          <ul className="divide-y divide-navy/10 rounded-2xl bg-white shadow-sm">
+            {adminRows.map((r, i) => (
+              <li key={i} className="flex items-center justify-between gap-3 p-4">
+                <span className="text-navy/70">{pick(locale, r.label)}</span>
+                <span className="text-right font-medium">{r.value}</span>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-3 text-xs text-navy/60">
+            {pick(locale, x.sources)}:{" "}
+            {dataSources.map((s, i) => (
+              <span key={s.url}>
+                {i > 0 && ", "}
+                <a href={s.url} target="_blank" rel="noopener noreferrer" className="underline">
+                  {s.name}
+                </a>
+              </span>
+            ))}
+          </p>
         </section>
 
         {/* Leaders */}
@@ -63,43 +127,6 @@ export default async function VillagePage({ params }: { params: Promise<{ locale
 
         {/* NRI */}
         <NriSection locale={locale} />
-
-        {/* Achievements */}
-        <section>
-          <h2 className="mb-3 text-xl font-bold">{pick(locale, labels.achievements)}</h2>
-          <div className="space-y-3">
-            {achievements.map((a) => {
-              const Icon = achIcons[a.kind as keyof typeof achIcons];
-              return (
-                <div key={a.id} className="flex gap-4 rounded-2xl bg-white p-5 shadow-sm">
-                  <div className="flex size-12 shrink-0 items-center justify-center rounded-full bg-navy text-gold">
-                    <Icon size={22} />
-                  </div>
-                  <div>
-                    <p className="font-bold">{pick(locale, a.name)}</p>
-                    <p className="text-sm text-navy/70">{pick(locale, a.text)}</p>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </section>
-
-        {/* Directory */}
-        <section>
-          <h2 className="text-xl font-bold">{pick(locale, labels.directory)}</h2>
-          <p className="mb-3 text-sm text-navy/60">{pick(locale, labels.consentNote)}</p>
-          <div className="grid gap-3 sm:grid-cols-2">
-            {dirCats.map(({ Icon, label }, i) => (
-              <div key={i} className="rounded-2xl bg-white p-5 shadow-sm">
-                <h3 className="flex items-center gap-2 font-bold">
-                  <Icon className="text-saffron" /> {pick(locale, label)}
-                </h3>
-                <p className="mt-2 text-sm text-navy/60">{pick(locale, labels.noEntries)}</p>
-              </div>
-            ))}
-          </div>
-        </section>
       </Container>
     </>
   );
