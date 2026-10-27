@@ -2,6 +2,7 @@ import Container from "@/components/Container";
 import PageBanner from "@/components/PageBanner";
 import UpiPay from "@/components/UpiPay";
 import { labels, pick, site } from "@/lib/content";
+import { x } from "@/lib/extra";
 import { getDictionary, isLocale } from "@/lib/i18n";
 import { notFound } from "next/navigation";
 
@@ -19,18 +20,29 @@ export default async function DonatePage({ params }: { params: Promise<{ locale:
     <>
       <PageBanner title={t.home.donateTitle} subtitle={t.home.donateText} />
       <Container className="max-w-lg space-y-10 py-8">
-        <UpiPay
+                <UpiPay
           upiId={site.upiId}
           payee={pick(locale, site.payee)}
+          upiName={site.upiName}
+          showAppButton={site.upiAppButton}
           labels={{
             upiId: pick(locale, labels.upiId),
             payee: pick(locale, labels.payee),
             copy: pick(locale, labels.copy),
             copied: pick(locale, labels.copied),
             amount: pick(locale, labels.amount),
-            payNow: pick(locale, labels.payNow),
+            amountHint: pick(locale, x.amountHint),
             scanQr: pick(locale, labels.scanQr),
             note: pick(locale, labels.donateNote),
+            saveQr: pick(locale, x.saveQr),
+            howTitle: pick(locale, x.howTitle),
+            step1: pick(locale, x.step1),
+            step2: pick(locale, x.step2),
+            step3: pick(locale, x.step3),
+            orAnother: pick(locale, x.orAnother),
+            orId: pick(locale, x.orId),
+            safety: pick(locale, x.safety),
+            openApp: pick(locale, x.openApp),
           }}
         />
 

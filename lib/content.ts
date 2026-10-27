@@ -94,6 +94,8 @@ export const site = {
   phoneShow: "+91 7087045767",
   mapUrl:
     "https://maps.app.goo.gl/bdmvC9rpRBs8nmup9",
+    upiName: "Ramgarh Sainian Gurudwara Sahib", // sirf English, UPI link ke liye (Punjabi akshar nahi)
+  upiAppButton: false,
 };
 
 export const geo = { lat: 30.612361, lon: 76.472778 };
