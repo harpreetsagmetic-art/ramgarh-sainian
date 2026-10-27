@@ -9,12 +9,12 @@ export default function TodayDate({ locale }: { locale: Locale }) {
   useEffect(() => {
     const update = () =>
       setText(
-        new Date().toLocaleDateString("en-GB", {
-          day: "2-digit",
-          month: "2-digit",
+        new Date().toLocaleDateString(locale === "pa" ? "pa-IN" : "en-IN", {
+          day: "numeric",
+          month: "long",
           year: "numeric",
-          timeZone: "Asia/Kolkata",
-        })
+          timeZone: "UTC",
+        }),
       );
 
     update();

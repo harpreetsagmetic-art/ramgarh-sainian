@@ -1,5 +1,6 @@
 import Container from "@/components/Container";
 import HukamnamaCard from "@/components/HukamnamaCard";
+import LiveLink from "@/components/LiveLink";
 import TodayStrip from "@/components/TodayStrip";
 import UpcomingSection from "@/components/UpcomingSection";
 import WeatherCard from "@/components/WeatherCard";
@@ -7,18 +8,18 @@ import { pick } from "@/lib/content";
 import { x } from "@/lib/extra";
 import { getDictionary, isLocale } from "@/lib/i18n";
 import {
-    Bell,
-    HandHeart,
-    Images,
-    Landmark,
-    Phone,
-    TreePine,
+  Bell,
+  HandHeart,
+  Images,
+  Landmark,
+  Phone,
+  TreePine,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-export const revalidate = 1800; // page har 30 minute mein refresh
+export const revalidate = 1800; 
 
 export default async function HomePage({
   params,
@@ -95,7 +96,9 @@ export default async function HomePage({
       <Container className="mt-8">
         <TodayStrip locale={locale} />
       </Container>
-
+           <Container className="mt-4">
+        <LiveLink locale={locale} />
+      </Container>
       {/* HUKAMNAMA */}
       <Container className="mt-4">
         <HukamnamaCard locale={locale} />

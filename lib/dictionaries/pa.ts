@@ -9,6 +9,7 @@ export const pa = {
     home: "ਮੁੱਖ ਪੰਨਾ",
     village: "ਪਿੰਡ",
     gurudwara: "ਗੁਰਦੁਆਰਾ",
+        live: "ਲਾਈਵ",
     notices: "ਸੂਚਨਾਵਾਂ",
     gallery: "ਗੈਲਰੀ",
     donate: "ਦਾਨ",

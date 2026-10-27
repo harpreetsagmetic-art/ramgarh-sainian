@@ -1,12 +1,28 @@
-import { pick } from "@/lib/content";
+"use client";
 import { x } from "@/lib/extra";
-import { getDay, holidayName, istDate, significance } from "@/lib/gurpurab";
+import { holidayName, significance, type DayInfo } from "@/lib/gurpurab";
 import type { Locale } from "@/lib/i18n";
 import { CalendarDays, ScrollText } from "lucide-react";
+import { useEffect, useState } from "react";
 import TodayDate from "./TodayDate";
 
-export default async function TodayStrip({ locale }: { locale: Locale }) {
-  const day = await getDay(istDate(0));
+type State = { day: DayInfo | null } | null; // null = loading
+
+export default function TodayStrip({ locale }: { locale: Locale }) {
+  const [state, setState] = useState<State>(null);
+
+  useEffect(() => {
+    const ctrl = new AbortController();
+    fetch("/api/today", { signal: ctrl.signal })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((j) => setState(j ?? { day: null }))
+      .catch(() => {
+        if (!ctrl.signal.aborted) setState({ day: null });
+      });
+    return () => ctrl.abort();
+  }, []);
+
+  const day = state?.day ?? null;
   const today = day?.holidays.filter((h) => h.type !== "historical") ?? [];
   const history = day?.holidays.filter((h) => h.type === "historical") ?? [];
 
@@ -18,12 +34,10 @@ export default async function TodayStrip({ locale }: { locale: Locale }) {
           <p className="text-lg font-bold">
             <TodayDate locale={locale} />
           </p>
-          {day && (
-            <p className="text-sm text-navy/70">
-              {day.nanakshahi.day} {day.nanakshahi.monthName[locale]},{" "}
-              {pick(locale, x.nanakshahi)} {day.nanakshahi.year}
-            </p>
-          )}
+          <p className="min-h-5 text-sm text-navy/70">
+            {day &&
+              `${day.nanakshahi.day} ${day.nanakshahi.monthName[locale]}, ${x.nanakshahi[locale]} ${day.nanakshahi.year}`}
+          </p>
         </div>
       </div>
 
@@ -40,7 +54,7 @@ export default async function TodayStrip({ locale }: { locale: Locale }) {
       {history.length > 0 && (
         <div className="mt-4 border-t border-navy/10 pt-3">
           <h2 className="flex items-center gap-2 font-bold">
-            <ScrollText size={18} className="text-saffron" /> {pick(locale, x.todayHistory)}
+            <ScrollText size={18} className="text-saffron" /> {x.todayHistory[locale]}
           </h2>
           <ul className="mt-2 space-y-2">
             {history.map((h, i) => (

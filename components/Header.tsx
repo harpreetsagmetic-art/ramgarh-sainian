@@ -1,5 +1,6 @@
 "use client";
 import type { Locale } from "@/lib/i18n";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -17,8 +18,9 @@ export default function Header({
   return (
     <header className="sticky top-0 z-40 bg-navy text-white shadow-md">
       <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
-        <Link href={`/${locale}`} className="text-lg font-bold text-gold">
-          {name}
+                <Link href={`/${locale}`} className="flex items-center gap-2.5">
+          <Image src="/images/logo-emblem.png" alt="" width={192} height={192} priority className="size-10" />
+          <span className="text-lg font-bold leading-tight text-gold">{name}</span>
         </Link>
 
         <nav className="hidden gap-6 md:flex">

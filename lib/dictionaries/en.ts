@@ -11,6 +11,7 @@ export const en: typeof pa = {
     home: "Home",
     village: "Village",
     gurudwara: "Gurudwara",
+        live: "Live",
     notices: "Notices",
     gallery: "Gallery",
     donate: "Donate",
