@@ -3,6 +3,7 @@ import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import { getDictionary, isLocale, locales } from "@/lib/i18n";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Analytics } from "@vercel/analytics/next";
 import type { Metadata, Viewport } from "next";
 import { Noto_Sans_Gurmukhi, Poppins } from "next/font/google";
 import { notFound } from "next/navigation";
@@ -99,6 +100,7 @@ export default async function RootLayout({
         />
         <BottomNav items={nav} />
         <SpeedInsights />
+        <Analytics />
       </body>
     </html>
   );
