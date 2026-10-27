@@ -20,7 +20,7 @@ const poppins = Poppins({
   display: "swap",
 });
 
-export const viewport: Viewport = { themeColor: "#1D2951" };
+export const viewport: Viewport = { themeColor: "#1D2951", viewportFit: "cover" };
 
 export const metadata: Metadata = {
   // OG image ka link poora (absolute) hona chahiye, isliye base URL chahiye
@@ -69,12 +69,12 @@ export default async function RootLayout({
     { href: `${base}/village`, label: t.nav.village, icon: "village" },
     { href: `${base}/gurudwara`, label: t.nav.gurudwara, icon: "gurudwara" },
     { href: `${base}/live`, label: t.nav.live, icon: "live" },
-    { href: `${base}/gallery`, label: t.nav.gallery, icon: "gallery" },
     { href: `${base}/donate`, label: t.nav.donate, icon: "donate" },
   ];
   // Desktop header: 6 items (Contact ke saath)
   const headerItems = [
     ...nav,
+    { href: `${base}/gallery`, label: t.nav.gallery },
     { href: `${base}/contact`, label: t.nav.contact },
   ];
 
