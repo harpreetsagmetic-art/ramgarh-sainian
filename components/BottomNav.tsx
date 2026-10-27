@@ -1,10 +1,10 @@
 "use client";
-import { HandHeart, Home, Images, Landmark, TreePine } from "lucide-react";
+import { HandHeart, Home, Images, Landmark, Radio, TreePine } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const icons = {
-  home: Home, village: TreePine, gurudwara: Landmark, gallery: Images, donate: HandHeart,
+  home: Home, village: TreePine, gurudwara: Landmark, live: Radio, gallery: Images, donate: HandHeart,
 } as const;
 
 type Item = { href: string; label: string; icon: string };

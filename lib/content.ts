@@ -83,25 +83,23 @@ export const labels = {
   local: { pa: "ਸਥਾਨਕ ਨੰਬਰ", en: "Local numbers" },
 } satisfies Record<string, Bi>;
 
-// ⚠️ Sab placeholder hai. Asli jaankari gaon se ikatthi karke badalna.
+
 export const site = {
-  upiId: "testing@okicici",
+  upiId: "ss7747801@okhdfcbank",
   payee: {
-    pa: "ਗੁਰਦੁਆਰਾ ਸਾਹਿਬ ਪ੍ਰਬੰਧਕ ਕਮੇਟੀ",
-    en: "Gurudwara Sahib Management Committee",
+    pa: "ਸੁਖਵੀਰ ਸਿੰਘ",
+    en: "Sukhvir Singh",
   },
-  phone: "+919898989898",
-  phoneShow: "+91 9898989898",
+  phone: "+917087045767",
+  phoneShow: "+91 7087045767",
   mapUrl:
     "https://maps.app.goo.gl/bdmvC9rpRBs8nmup9",
 };
 
-// ⚠️ Ye Fatehgarh Sahib ke lagbhag coordinates hain.
-// Apne gaon ke liye: Google Maps mein gaon par long-press karo, upar aaye numbers copy karo.
 export const geo = { lat: 30.612361, lon: 76.472778 };
 
 // ⚠️ Sahi Hukamnama page khud khol kar pakka karo, phir yahan poora link daalo.
-export const links = { hukamnamaUrl: "https://sgpc.net" };
+export const links = { hukamnamaUrl: "https://hukamnamasahib.com/" };
 
 export const village = {
   about: {
@@ -117,17 +115,12 @@ export const village = {
   leaders: [
     {
       id: 1,
-      name: { pa: "ਨਾਮ ਜਲਦੀ", en: "Name soon" },
+      name: { pa: "ਵਿਕਰਮਜੀਤ ਸਿੰਘ", en: "Vikramjeet Singh" },
       role: { pa: "ਸਰਪੰਚ", en: "Sarpanch" },
     },
     {
-      id: 2,
-      name: { pa: "ਨਾਮ ਜਲਦੀ", en: "Name soon" },
-      role: { pa: "ਪੰਚਾਇਤ ਮੈਂਬਰ", en: "Panchayat member" },
-    },
-    {
       id: 3,
-      name: { pa: "ਨਾਮ ਜਲਦੀ", en: "Name soon" },
+      name: { pa: "ਅਮਰਿੰਦਰ ਸਿੰਘ", en: "Amrinder Singh" },
       role: { pa: "ਗੁਰਦੁਆਰਾ ਪ੍ਰਧਾਨ", en: "Gurudwara president" },
     },
   ],
