@@ -1,15 +1,25 @@
 import Container from "@/components/Container";
+import LivePlayer from "@/components/LivePlayer";
 import PageBanner from "@/components/PageBanner";
 import { pick } from "@/lib/content";
 import { x } from "@/lib/extra";
 import { isLocale } from "@/lib/i18n";
-import { channelUrl, getRecentVideos, liveEmbedUrl, liveWatchUrl } from "@/lib/live";
+import {
+  channelUrl,
+  getRecentVideos,
+  liveEmbedUrl,
+  liveWatchUrl,
+} from "@/lib/live";
 import { ExternalLink, Play } from "lucide-react";
 import { notFound } from "next/navigation";
 
 export const revalidate = 900;
 
-export default async function LivePage({ params }: { params: Promise<{ locale: string }> }) {
+export default async function LivePage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
 
@@ -17,31 +27,24 @@ export default async function LivePage({ params }: { params: Promise<{ locale: s
   const fmt = (iso: string) =>
     iso
       ? new Date(iso).toLocaleDateString(locale === "pa" ? "pa-IN" : "en-IN", {
-          day: "numeric", month: "long", year: "numeric", timeZone: "Asia/Kolkata",
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+          timeZone: "Asia/Kolkata",
         })
       : "";
 
   return (
     <>
-      <PageBanner title={pick(locale, x.liveTitle)} subtitle={pick(locale, x.liveFrom)} image="/images/hero.jpg" />
+      <PageBanner
+        title={pick(locale, x.liveTitle)}
+        subtitle={pick(locale, x.liveFrom)}
+        image="/images/hero.jpg"
+      />
 
       <Container className="space-y-6 py-8">
         {/* Live player */}
-        <div className="overflow-hidden rounded-2xl border-4 border-gold bg-black shadow-lg">
-          <div className="aspect-video">
-            <iframe
-              src={liveEmbedUrl}
-              title={pick(locale, x.liveTitle)}
-              className="size-full"
-              loading="lazy"
-              allow="accelerometer; encrypted-media; picture-in-picture; fullscreen"
-              allowFullScreen
-              referrerPolicy="strict-origin-when-cross-origin"
-            />
-          </div>
-        </div>
-
-        <p className="text-sm text-navy/70">{pick(locale, x.liveNote)}</p>
+        <LivePlayer locale={locale} fallbackEmbedUrl={liveEmbedUrl} />
 
         <div className="flex flex-col gap-3 sm:flex-row">
           <a
@@ -64,9 +67,13 @@ export default async function LivePage({ params }: { params: Promise<{ locale: s
 
         {/* Recent videos */}
         <section>
-          <h2 className="mb-3 text-xl font-bold">{pick(locale, x.recentVideos)}</h2>
+          <h2 className="mb-3 text-xl font-bold">
+            {pick(locale, x.recentVideos)}
+          </h2>
           {videos.length === 0 ? (
-            <p className="rounded-xl bg-white p-4 text-navy/70 shadow-sm">{pick(locale, x.noRecent)}</p>
+            <p className="rounded-xl bg-white p-4 text-navy/70 shadow-sm">
+              {pick(locale, x.noRecent)}
+            </p>
           ) : (
             <ul className="divide-y divide-navy/10 rounded-2xl bg-white shadow-sm">
               {videos.map((v) => (
@@ -82,7 +89,9 @@ export default async function LivePage({ params }: { params: Promise<{ locale: s
                     </span>
                     <span>
                       <span className="block font-medium">{v.title}</span>
-                      <span className="block text-xs text-navy/60">{fmt(v.published)}</span>
+                      <span className="block text-xs text-navy/60">
+                        {fmt(v.published)}
+                      </span>
                     </span>
                   </a>
                 </li>
