@@ -60,13 +60,16 @@ export const x = {
     en: "These figures are from Census 2011; today's actual numbers may differ. Literacy rate is counted among people aged 7 and above.",
   },
 
-    saveQr: { pa: "QR ਫ਼ੋਨ ਵਿੱਚ ਸੇਵ ਕਰੋ", en: "Save QR to phone" },
+  saveQr: { pa: "QR ਫ਼ੋਨ ਵਿੱਚ ਸੇਵ ਕਰੋ", en: "Save QR to phone" },
   amountHint: {
     pa: "ਰਕਮ ਭਰੋਗੇ ਤਾਂ QR ਵਿੱਚ ਆਪੇ ਆ ਜਾਵੇਗੀ (ਜ਼ਰੂਰੀ ਨਹੀਂ)।",
     en: "If you enter an amount it is filled into the QR (optional).",
   },
   howTitle: { pa: "ਇਸ ਤਰ੍ਹਾਂ ਦਾਨ ਕਰੋ", en: "How to donate" },
-  step1: { pa: "QR ਫ਼ੋਨ ਵਿੱਚ ਸੇਵ ਕਰੋ (ਜਾਂ ਸਕ੍ਰੀਨਸ਼ਾਟ ਲਓ)।", en: "Save the QR to your phone (or take a screenshot)." },
+  step1: {
+    pa: "QR ਫ਼ੋਨ ਵਿੱਚ ਸੇਵ ਕਰੋ (ਜਾਂ ਸਕ੍ਰੀਨਸ਼ਾਟ ਲਓ)।",
+    en: "Save the QR to your phone (or take a screenshot).",
+  },
   step2: {
     pa: "Google Pay, PhonePe ਜਾਂ Paytm ਖੋਲ੍ਹੋ, Scan ਚੁਣੋ ਅਤੇ ਗੈਲਰੀ ਦੇ ਆਈਕਨ ਤੋਂ ਇਹ QR ਚੁਣੋ।",
     en: "Open Google Pay, PhonePe or Paytm, tap Scan and pick this QR from the gallery icon.",
@@ -75,7 +78,10 @@ export const x = {
     pa: "ਨਾਮ ਜਾਂਚੋ, ਰਕਮ ਭਰੋ (ਜੇ ਨਹੀਂ ਭਰੀ) ਅਤੇ UPI PIN ਪਾਓ।",
     en: "Check the name, enter the amount if it is empty, and enter your UPI PIN.",
   },
-  orAnother: { pa: "ਜਾਂ ਕਿਸੇ ਹੋਰ ਫ਼ੋਨ ਨਾਲ ਇਹ QR ਸਕੈਨ ਕਰੋ।", en: "Or scan this QR with another phone." },
+  orAnother: {
+    pa: "ਜਾਂ ਕਿਸੇ ਹੋਰ ਫ਼ੋਨ ਨਾਲ ਇਹ QR ਸਕੈਨ ਕਰੋ।",
+    en: "Or scan this QR with another phone.",
+  },
   orId: {
     pa: "ਜਾਂ UPI ID ਕਾਪੀ ਕਰੋ ਅਤੇ ਕਿਸੇ ਵੀ ਐਪ ਵਿੱਚ “UPI ID ਤੇ ਭੇਜੋ” ਚੁਣੋ।",
     en: "Or copy the UPI ID and choose “Pay to UPI ID” in any app.",
@@ -84,6 +90,14 @@ export const x = {
     pa: "ਭੁਗਤਾਨ ਤੋਂ ਪਹਿਲਾਂ ਐਪ ਵਿੱਚ ਪ੍ਰਾਪਤਕਰਤਾ ਦਾ ਨਾਮ ਜ਼ਰੂਰ ਜਾਂਚ ਲਓ ਜੀ।",
     en: "Please check the payee name in your app before paying.",
   },
+
+  liveBadge: { pa: "ਲਾਈਵ", en: "LIVE" },
+  latestBadge: { pa: "ਸਭ ਤੋਂ ਨਵਾਂ ਵੀਡੀਓ", en: "Latest video" },
+  notLiveNote: {
+    pa: "ਇਸ ਵੇਲੇ ਲਾਈਵ ਪ੍ਰਸਾਰਣ ਨਹੀਂ ਚੱਲ ਰਿਹਾ, ਇਸ ਲਈ ਚੈਨਲ ਦਾ ਸਭ ਤੋਂ ਨਵਾਂ ਵੀਡੀਓ ਦਿਖਾਇਆ ਜਾ ਰਿਹਾ ਹੈ।",
+    en: "No live broadcast right now, so the channel's latest video is shown.",
+  },
+  playerLoading: { pa: "ਵੀਡੀਓ ਆ ਰਿਹਾ ਹੈ...", en: "Loading video..." },
   openApp: { pa: "UPI ਐਪ ਖੋਲ੍ਹੋ", en: "Open UPI app" },
   adminTitle: { pa: "ਪ੍ਰਸ਼ਾਸਨਿਕ ਜਾਣਕਾਰੀ", en: "Administrative details" },
   pin: { pa: "ਪਿੰਨ ਕੋਡ", en: "PIN code" },
