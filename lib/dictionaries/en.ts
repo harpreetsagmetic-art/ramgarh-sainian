@@ -16,6 +16,8 @@ export const en: typeof pa = {
     gallery: "Gallery",
     donate: "Donate",
     contact: "Contact",
+    history: "Sikh History",
+    calendar: "Sikh Calendar",
   },
   home: {
     greeting: "Sat Sri Akal",

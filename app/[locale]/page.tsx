@@ -10,10 +10,13 @@ import { x } from "@/lib/extra";
 import { getDictionary, isLocale } from "@/lib/i18n";
 import {
   Bell,
+  CalendarDays,
   HandHeart,
+  History,
   Images,
   Landmark,
   Phone,
+  Radio,
   TreePine,
 } from "lucide-react";
 import Image from "next/image";
@@ -37,6 +40,10 @@ export default async function HomePage({
     { href: `${base}/gurudwara`, label: t.nav.gurudwara, Icon: Landmark },
     { href: `${base}/gallery`, label: t.nav.gallery, Icon: Images },
     { href: `${base}/contact`, label: t.nav.contact, Icon: Phone },
+    { href: `${base}/calendar`, label: t.nav.calendar, Icon: CalendarDays },
+    { href: `${base}/history`, label: t.nav.history, Icon: History },
+    { href: `${base}/live`, label: t.nav.live, Icon: Radio },
+    { href: `${base}/donate`, label: t.nav.donate, Icon: HandHeart },
   ];
 
   return (
