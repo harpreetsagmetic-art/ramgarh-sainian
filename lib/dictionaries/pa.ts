@@ -14,6 +14,8 @@ export const pa = {
     gallery: "ਗੈਲਰੀ",
     donate: "ਦਾਨ",
     contact: "ਸੰਪਰਕ",
+    history: "ਸਿੱਖ ਇਤਿਹਾਸ",
+    calendar: "ਸਿੱਖ ਕੈਲੰਡਰ",
   },
   home: {
     greeting: "ਸਤ ਸ੍ਰੀ ਅਕਾਲ",
