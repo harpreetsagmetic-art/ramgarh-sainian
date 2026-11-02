@@ -2,9 +2,10 @@ import { pick } from "@/lib/content";
 import { x } from "@/lib/extra";
 import { fmtDay, getUpcoming, holidayName } from "@/lib/gurpurab";
 import type { Locale } from "@/lib/i18n";
-import { Moon, Star, Sun } from "lucide-react";
+import { Sun } from "lucide-react";
 import Link from "next/link";
 import DaysLeft from "./DaysLeft";
+import MoonPhase from "./MoonPhase";
 
 export default async function UpcomingSection({
   locale, limit = 8,
@@ -14,9 +15,9 @@ export default async function UpcomingSection({
   const todayLabel = pick(locale, x.todayLabel);
 
   const cards = [
-    { type: "sangrand", label: x.nextSangrand, Icon: Sun },
-    { type: "puranmashi", label: x.nextPuranmashi, Icon: Moon },
-    { type: "massia", label: x.nextMassia, Icon: Star },
+    { type: "sangrand", label: x.nextSangrand, icon: <Sun size={16} className="text-saffron" /> },
+    { type: "puranmashi", label: x.nextPuranmashi, icon: <MoonPhase phase="full" /> },
+    { type: "massia", label: x.nextMassia, icon: <MoonPhase phase="new" /> },
   ];
 
   return (
@@ -28,12 +29,12 @@ export default async function UpcomingSection({
       ) : (
         <>
           <div className="grid gap-3 sm:grid-cols-3">
-            {cards.map(({ type, label, Icon }) => {
+           {cards.map(({ type, label, icon }) => {
               const h = list.find((i) => i.type === type);
               return (
                 <div key={type} className="rounded-2xl border-b-4 border-saffron bg-white p-4 shadow-sm">
                   <p className="flex items-center gap-2 text-sm font-medium text-navy/70">
-                    <Icon size={16} className="text-saffron" /> {pick(locale, label)}
+                   {icon} {pick(locale, label)}
                   </p>
                   {h ? (
                     <>
