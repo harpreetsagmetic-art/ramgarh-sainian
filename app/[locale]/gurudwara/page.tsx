@@ -1,4 +1,5 @@
 import Container from "@/components/Container";
+import HistoryLink from "@/components/HistoryLink";
 import HukamnamaCard from "@/components/HukamnamaCard";
 import LiveLink from "@/components/LiveLink";
 import NitnemSection from "@/components/NitnemSection";
@@ -21,6 +22,7 @@ export default async function GurudwaraPage({ params }: { params: Promise<{ loca
       <Container className="space-y-10 py-8">
         <p className="leading-relaxed text-navy/80">{pick(locale, gurudwara.about)}</p>
         <LiveLink locale={locale} />
+        <HistoryLink locale={locale} />
         <HukamnamaCard locale={locale} />
         <NitnemSection locale={locale} />
         <UpcomingSection locale={locale} limit={40} />

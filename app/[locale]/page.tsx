@@ -1,4 +1,5 @@
 import Container from "@/components/Container";
+import HistoryLink from "@/components/HistoryLink";
 import HukamnamaCard from "@/components/HukamnamaCard";
 import LiveLink from "@/components/LiveLink";
 import TodayStrip from "@/components/TodayStrip";
@@ -19,7 +20,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-export const revalidate = 1800; 
+export const revalidate = 1800;
 
 export default async function HomePage({
   params,
@@ -96,8 +97,11 @@ export default async function HomePage({
       <Container className="mt-8">
         <TodayStrip locale={locale} />
       </Container>
-           <Container className="mt-4">
+      <Container className="mt-4">
         <LiveLink locale={locale} />
+      </Container>
+      <Container className="mt-4">
+        <HistoryLink locale={locale} />
       </Container>
       {/* HUKAMNAMA */}
       <Container className="mt-4">
