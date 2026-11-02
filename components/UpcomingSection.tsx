@@ -3,6 +3,7 @@ import { x } from "@/lib/extra";
 import { fmtDay, getUpcoming, holidayName } from "@/lib/gurpurab";
 import type { Locale } from "@/lib/i18n";
 import { Moon, Star, Sun } from "lucide-react";
+import Link from "next/link";
 import DaysLeft from "./DaysLeft";
 
 export default async function UpcomingSection({
@@ -64,6 +65,9 @@ export default async function UpcomingSection({
           </ul>
 
           <p className="text-xs text-navy/50">{pick(locale, x.calendarSource)}</p>
+                    <Link href={`/${locale}/calendar`} className="inline-block text-sm font-bold text-saffron">
+            {pick(locale, x.viewCalendar)} →
+          </Link>
         </>
       )}
     </section>
