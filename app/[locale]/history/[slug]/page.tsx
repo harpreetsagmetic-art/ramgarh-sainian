@@ -53,13 +53,13 @@ export default async function HistoryTopicPage({ params }: Props) {
           <h2 className="mb-3 font-bold">{x.fromWikipedia[locale]}</h2>
 
           {data?.image && (
-            <figure className="mx-auto mb-4 max-w-xs overflow-hidden rounded-xl bg-cream">
+            <figure className="mx-auto mb-4 w-full max-w-3xl overflow-hidden rounded-xl bg-cream">
               <Image
                 src={data.image.src}
                 alt={name}
                 width={data.image.width}
                 height={data.image.height}
-                sizes="(max-width: 9600px) 90vw, 960px"
+                sizes="(max-width: 960px) 90vw, 960px"
                 className="h-auto w-full"
               />
               <figcaption className="p-2 text-center text-xs text-navy/60">{x.imageCredit[locale]}</figcaption>
