@@ -4,6 +4,7 @@ import HukamnamaCard from "@/components/HukamnamaCard";
 import LiveLink from "@/components/LiveLink";
 import TodayStrip from "@/components/TodayStrip";
 import UpcomingSection from "@/components/UpcomingSection";
+import VillageMapCard from "@/components/VillageMapCard";
 import WeatherCard from "@/components/WeatherCard";
 import { pick } from "@/lib/content";
 import { x } from "@/lib/extra";
@@ -109,6 +110,9 @@ export default async function HomePage({
       </Container>
       <Container className="mt-4">
         <HistoryLink locale={locale} />
+      </Container>
+      <Container className="mt-8">
+        <VillageMapCard locale={locale} />
       </Container>
       {/* HUKAMNAMA */}
       <Container className="mt-4">

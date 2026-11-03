@@ -107,7 +107,37 @@ export const x = {
   tehsil: { pa: "ਤਹਿਸੀਲ", en: "Tehsil" },
   district: { pa: "ਜ਼ਿਲ੍ਹਾ", en: "District" },
   sources: { pa: "ਸਰੋਤ", en: "Sources" },
-
+  mapTitle: { pa: "ਸਾਡੇ ਪਿੰਡ ਦਾ ਨਕਸ਼ਾ", en: "Our Village Map" },
+  mapSub: {
+    pa: "ਸਵਾਮਿਤਵ (SVAMITVA) ਯੋਜਨਾ ਅਧੀਨ ਸਰਵੇ ਆਫ਼ ਇੰਡੀਆ ਵੱਲੋਂ ਡਰੋਨ ਨਾਲ ਬਣਾਇਆ ਨਕਸ਼ਾ (2026)",
+    en: "Drone-surveyed map by Survey of India under the SVAMITVA scheme (2026)",
+  },
+  mapAlt: {
+    pa: "ਰਾਮਗੜ੍ਹ ਸੈਣੀਆਂ ਪਿੰਡ ਦਾ ਡਰੋਨ ਨਕਸ਼ਾ, ਪਲਾਟਾਂ ਦੀਆਂ ਹੱਦਾਂ ਅਤੇ ਗਲੀਆਂ ਸਮੇਤ",
+    en: "Drone map of Ramgarh Sanian village showing plot boundaries and roads",
+  },
+  mapOpen: { pa: "ਨਕਸ਼ਾ ਵੱਡਾ ਕਰਕੇ ਵੇਖੋ", en: "View map in full detail" },
+  mapPdf: { pa: "PDF ਖੋਲ੍ਹੋ", en: "Open PDF" },
+  mapDownload: { pa: "PDF ਡਾਊਨਲੋਡ ਕਰੋ", en: "Download PDF" },
+  mapHint: {
+    pa: "ਦੋ ਉਂਗਲਾਂ ਨਾਲ ਜ਼ੂਮ ਕਰੋ, ਇੱਕ ਉਂਗਲ ਨਾਲ ਖਿੱਚ ਕੇ ਹਿਲਾਓ। ਕੰਪਿਊਟਰ 'ਤੇ ਮਾਊਸ ਦੇ ਪਹੀਏ ਨਾਲ ਜ਼ੂਮ ਕਰੋ।",
+    en: "Pinch with two fingers to zoom and drag with one finger. On a computer, use the mouse wheel.",
+  },
+  mapLoadingHd: {
+    pa: "ਪੂਰੀ ਸਫ਼ਾਈ ਵਾਲਾ ਨਕਸ਼ਾ ਆ ਰਿਹਾ ਹੈ...",
+    en: "Loading the full-detail map...",
+  },
+  mapZoomIn: { pa: "ਵੱਡਾ ਕਰੋ", en: "Zoom in" },
+  mapZoomOut: { pa: "ਛੋਟਾ ਕਰੋ", en: "Zoom out" },
+  mapFit: { pa: "ਪੂਰਾ ਨਕਸ਼ਾ", en: "Fit whole map" },
+  mapNote: {
+    pa: "ਇਹ ਨਕਸ਼ਾ ਸਿਰਫ਼ ਜਾਣਕਾਰੀ ਲਈ ਹੈ। ਜ਼ਮੀਨ ਜਾਂ ਪਲਾਟ ਦੇ ਕਾਨੂੰਨੀ ਮਾਮਲਿਆਂ ਲਈ ਮਾਲ ਵਿਭਾਗ (ਪਟਵਾਰੀ) ਦਾ ਰਿਕਾਰਡ ਹੀ ਮੰਨਿਆ ਜਾਵੇਗਾ।",
+    en: "This map is for information only. For legal matters about land or plots, the Revenue Department (Patwari) record applies.",
+  },
+  mapCredit: {
+    pa: "ਸਰੋਤ: Survey of India, SVAMITVA Punjab, ਅੰਤਿਮ ਨਕਸ਼ਾ (V4), 23-01-2026।",
+    en: "Source: Survey of India, SVAMITVA Punjab, final map (V4), 23-01-2026.",
+  },
   comingSoon: { pa: "ਜਲਦੀ ਆ ਰਹੀ ਹੈ", en: "Coming soon" },
   liveTitle: { pa: "ਲਾਈਵ ਗੁਰਬਾਣੀ ਕੀਰਤਨ", en: "Live Gurbani Kirtan" },
   liveFrom: {

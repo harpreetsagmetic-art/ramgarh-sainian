@@ -1,6 +1,7 @@
 import Container from "@/components/Container";
 import NriSection from "@/components/NriSection";
 import PageBanner from "@/components/PageBanner";
+import VillageMapCard from "@/components/VillageMapCard";
 import { labels, pick, village } from "@/lib/content";
 import { admin, census, dataSources, projection, villageAbout, x } from "@/lib/extra";
 import { getDictionary, isLocale } from "@/lib/i18n";
@@ -54,7 +55,7 @@ export default async function VillagePage({ params }: { params: Promise<{ locale
           </div>
           <p className="mt-3 text-xs text-navy/60">{pick(locale, x.censusNote)}</p>
         </section>
-
+        <VillageMapCard locale={locale} />
         {/* Projected 2026 */}
         <section>
           <h2 className="text-xl font-bold">{pick(locale, x.projectedTitle)}</h2>
