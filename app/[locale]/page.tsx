@@ -121,7 +121,7 @@ export default async function HomePage({
       </Container>
 
       {/* WEATHER + NOTICES */}
-      <Container className="mt-8 grid items-start gap-4 md:grid-cols-2">
+      <Container className="mt-8 grid grid-cols-1 items-start gap-4 md:grid-cols-2">
         <WeatherCard locale={locale} />
 
         <div className="rounded-2xl bg-white p-5 shadow-sm">

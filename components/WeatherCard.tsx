@@ -28,7 +28,7 @@ export default async function WeatherCard({ locale }: { locale: Locale }) {
   const aqi = w.aqi ? aqiInfo(w.aqi.us) : null;
 
   return (
-    <div className="space-y-4 rounded-2xl bg-white p-5 shadow-sm">
+    <div className="min-w-0 space-y-4 rounded-2xl bg-white p-5 shadow-sm">
       <div>
         <h2 className="text-lg font-bold">{wx.title[locale]}</h2>
         <p className="mt-1 flex items-center gap-1 text-sm text-navy/70">
