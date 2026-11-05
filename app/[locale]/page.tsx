@@ -20,9 +20,11 @@ import {
   Radio,
   TreePine,
 } from "lucide-react";
+import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+
 
 export const revalidate = 1800;
 
@@ -152,4 +154,19 @@ export default async function HomePage({
       </Container>
     </>
   );
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const baseUrl = "https://www.ramgarhsainian.site"; // Replace with your production domain
+
+  return {
+    alternates: {
+      canonical: `${baseUrl}/${locale}`,
+    },
+  };
 }
