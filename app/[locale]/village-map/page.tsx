@@ -23,8 +23,8 @@ export default async function VillageMapPage({ params }: { params: Promise<{ loc
       <PageBanner title={x.mapTitle[locale]} subtitle={x.mapSub[locale]} image="/images/hero.jpg" />
       <Container className="space-y-4 py-6">
         <MapViewer
-          previewSrc="/maps/ramgarh-sainian-map-preview.webp"
-          fullSrc="/maps/ramgarh-sainian-map-full.webp"
+          previewSrc="/maps/ramgarh-sainian-map-preview.avif"
+          fullSrc="/maps/ramgarh-sainian-map-full.avif"
           labels={{
             alt: x.mapAlt[locale],
             loadingHd: x.mapLoadingHd[locale],
