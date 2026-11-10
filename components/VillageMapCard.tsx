@@ -17,7 +17,7 @@ export default function VillageMapCard({ locale }: { locale: Locale }) {
       {/* Nakshe par click: zoom wala viewer page */}
       <Link href={`/${locale}/village-map`} className="group relative block" aria-label={x.mapOpen[locale]}>
         <Image
-          src="/maps/ramgarh-sainian-map-preview.webp"
+          src="/maps/ramgarh-sainian-map-preview.avif"
           alt={x.mapAlt[locale]}
           width={1800}
           height={1273}
