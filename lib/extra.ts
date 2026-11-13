@@ -39,9 +39,9 @@ export const x = {
   nextMassia: { pa: "ਅਗਲੀ ਮੱਸਿਆ", en: "Next Massia" },
   daysLeft: { pa: "ਦਿਨ ਬਾਕੀ", en: "days to go" },
   todayLabel: { pa: "ਅੱਜ ਹੈ!", en: "Today!" },
-  calendarSource: {
-    pa: "ਕੈਲੰਡਰ: SGPC ਜੰਤਰੀ ਅਧਾਰਿਤ (gurpurab.com API)।",
-    en: "Calendar based on SGPC Jantri (gurpurab.com API).",
+   calendarSource: {
+    pa: "ਕੈਲੰਡਰ: ਅਧਿਕਾਰਤ ਨਾਨਕਸ਼ਾਹੀ ਕੈਲੰਡਰ (ਸੰਮਤ 558) ਅਨੁਸਾਰ।",
+    en: "Calendar as per the official Nanakshahi calendar (Sammat 558).",
   },
 
   // village data
@@ -231,14 +231,19 @@ export const x = {
     pa: "ਇਸ ਸ਼੍ਰੇਣੀ ਵਿੱਚ ਕੋਈ ਦਿਹਾੜਾ ਨਹੀਂ ਮਿਲਿਆ।",
     en: "No days found in this category.",
   },
-  coverageTill: {
-    pa: "ਕੈਲੰਡਰ ਦਾ ਡਾਟਾ ਇਸ ਤਾਰੀਖ਼ ਤੱਕ ਉਪਲਬਧ ਹੈ:",
-    en: "Calendar data is available until:",
+  estimated: { pa: "ਅੰਦਾਜ਼ਨ", en: "Estimated" },
+  estimatedNote: {
+    pa: "ਮੱਸਿਆ ਅਤੇ ਪੂਰਨਮਾਸ਼ੀ ਦੀਆਂ ਤਾਰੀਖ਼ਾਂ ਖਗੋਲੀ ਗਣਨਾ ਨਾਲ ਕੱਢੀਆਂ ਗਈਆਂ ਹਨ। ਕਿਰਪਾ ਕਰਕੇ ਗੁਰਦੁਆਰਾ ਸਾਹਿਬ ਦੇ ਛਪੇ ਕੈਲੰਡਰ ਨਾਲ ਮਿਲਾ ਲਓ ਜੀ।",
+    en: "Massia and Puranmashi dates are astronomically calculated. Please check them with the printed calendar at your Gurdwara.",
+  },
+ coverageTill: {
+    pa: "ਛਪੇ ਕੈਲੰਡਰ ਤੋਂ ਪੱਕੀਆਂ ਤਾਰੀਖ਼ਾਂ ਇਸ ਮਿਤੀ ਤੱਕ ਹਨ:",
+    en: "Dates confirmed from the printed calendar until:",
   },
   kindFestival: { pa: "ਤਿਉਹਾਰ", en: "Festival" },
   coverageSoon: {
-    pa: "ਇਸ ਤੋਂ ਬਾਅਦ ਦੀ ਜਾਣਕਾਰੀ ਨਵਾਂ ਸਾਲ ਜੁੜਨ 'ਤੇ ਆਪੇ ਦਿਖ ਜਾਵੇਗੀ।",
-    en: "Later dates will appear automatically once the new year is added.",
+    pa: "ਇਸ ਤੋਂ ਬਾਅਦ ਦੀਆਂ ਤਾਰੀਖ਼ਾਂ ਗਣਨਾ ਨਾਲ ਕੱਢੀਆਂ (ਅੰਦਾਜ਼ਨ) ਹਨ ਅਤੇ ਨਵਾਂ ਕੈਲੰਡਰ ਛਪਣ 'ਤੇ ਪੱਕੀਆਂ ਹੋਣਗੀਆਂ।",
+    en: "Later dates are calculated estimates and will be confirmed once the new calendar is printed.",
   },
   nitnemTitle: { pa: "ਨਿਤਨੇਮ", en: "Nitnem" },
   nitnemIntro: {

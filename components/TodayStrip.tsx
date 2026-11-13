@@ -45,7 +45,7 @@ export default function TodayStrip({ locale }: { locale: Locale }) {
           </p>
           <p className="min-h-5 text-sm text-navy/70">
             {day &&
-              `${day.nanakshahi.day} ${day.nanakshahi.monthName[locale]}, ${x.nanakshahi[locale]} ${day.nanakshahi.year}`}
+              `${day.nanakshahi?.day ?? ""} ${day.nanakshahi?.monthName?.[locale] ?? ""}, ${x.nanakshahi[locale]} ${day.nanakshahi?.year ?? ""}`}
           </p>
         </div>
       </div>
