@@ -60,6 +60,11 @@ export function ItemCard({
         <KindBadge kind={item.kind} locale={locale} />
         {item.importance === 1 && <Star size={14} aria-hidden="true" className="fill-saffron text-saffron" />}
         <span className="text-xs text-navy/60">{item.ns[locale]}</span>
+        {item.estimated && (
+          <span className="rounded-full border border-navy/30 px-2 py-0.5 text-xs text-navy/70">
+            {x.estimated[locale]}
+          </span>
+        )}
       </div>
       <p className="mt-1 font-bold">{item.name[locale]}</p>
       {item.text[locale] && <p className="mt-1 text-sm text-navy/80">{item.text[locale]}</p>}

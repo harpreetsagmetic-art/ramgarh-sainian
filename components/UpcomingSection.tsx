@@ -1,6 +1,7 @@
 import { pick } from "@/lib/content";
 import { x } from "@/lib/extra";
-import { fmtDay, getUpcoming, holidayName } from "@/lib/gurpurab";
+import { fmtDay, holidayName } from "@/lib/gurpurab";
+import { getUpcoming } from "@/lib/jantri";
 import type { Locale } from "@/lib/i18n";
 import { Sun } from "lucide-react";
 import Link from "next/link";
@@ -42,6 +43,9 @@ export default async function UpcomingSection({
                       <p className="text-sm font-medium text-saffron">
                         <DaysLeft date={h.date} daysLabel={daysLabel} todayLabel={todayLabel} />
                       </p>
+                      {h.status === "estimated" && (
+                        <p className="text-xs text-navy/50">{pick(locale, x.estimated)}</p>
+                      )}
                     </>
                   ) : (
                     <p className="mt-1 text-navy/50">—</p>
@@ -55,7 +59,12 @@ export default async function UpcomingSection({
             {list.slice(0, limit).map((h, i) => (
               <li key={`${h.id}-${h.date}-${i}`} className="flex items-start justify-between gap-3 p-4">
                 <div>
-                  <p className="font-bold">{holidayName(h, locale)}</p>
+                  <p className="font-bold">
+                    {holidayName(h, locale)}
+                    {h.status === "estimated" && (
+                      <span className="ml-2 text-xs font-normal text-navy/50">({pick(locale, x.estimated)})</span>
+                    )}
+                  </p>
                   <p className="text-sm text-navy/60">{fmtDay(h.date, locale)}</p>
                 </div>
                 <span className="shrink-0 text-sm font-medium text-saffron">

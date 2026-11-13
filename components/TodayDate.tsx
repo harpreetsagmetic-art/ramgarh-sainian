@@ -10,10 +10,11 @@ export default function TodayDate({ locale }: { locale: Locale }) {
     const update = () =>
       setText(
         new Date().toLocaleDateString(locale === "pa" ? "pa-IN" : "en-IN", {
+          weekday: "long",
           day: "numeric",
           month: "long",
           year: "numeric",
-          timeZone: "UTC",
+          timeZone: "Asia/Kolkata", // India ki aaj ki date (UTC nahi)
         }),
       );
 
