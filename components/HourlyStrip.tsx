@@ -2,18 +2,16 @@
 import type { Locale } from "@/lib/i18n";
 import { fmtHour, fromNow, nowKey, weatherInfo, type Hour } from "@/lib/weather";
 import { wx } from "@/lib/weather-text";
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 import WeatherIcon from "./WeatherIcon";
 
 export default function HourlyStrip({
   hours, locale, count = 24,
 }: { hours: Hour[]; locale: Locale; count?: number }) {
   // Pehle server wali list (hydration mismatch nahi), phir browser ke "abhi" ke hisaab se
-  const [list, setList] = useState<Hour[]>(() => hours.slice(0, count));
-
-  useEffect(() => {
-    setList(fromNow(hours, nowKey(), count));
-  }, [hours, count]);
+  const list = useMemo(() => {
+  return fromNow(hours, nowKey(), count);
+}, [hours, count]);
 
   return (
     <div

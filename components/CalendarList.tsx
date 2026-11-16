@@ -2,7 +2,7 @@
 import { x } from "@/lib/extra";
 import { fmtDay, type CalItem, type Kind } from "@/lib/gurpurab";
 import type { Locale } from "@/lib/i18n";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { ItemCard } from "./CalendarBits";
 import DaysLeft from "./DaysLeft";
 
@@ -20,12 +20,11 @@ const filters: { id: Filter; label: { pa: string; en: string } }[] = [
 
 export default function CalendarList({ items, locale }: { items: CalItem[]; locale: Locale }) {
   const [filter, setFilter] = useState<Filter>("all");
-  const [today, setToday] = useState<string | null>(null);
-
-  // Beeta hua din browser ki aaj ki date se hatao (page cache purana ho sakta hai)
-  useEffect(() => {
-    setToday(new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Kolkata" }));
-  }, []);
+  const today = useMemo(() => {
+  return new Date().toLocaleDateString("en-CA", {
+    timeZone: "Asia/Kolkata",
+  });
+}, []);
 
   const groups = useMemo(() => {
     const shown = items.filter(
