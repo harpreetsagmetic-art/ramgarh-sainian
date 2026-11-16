@@ -2,7 +2,7 @@
 import type { Locale } from "@/lib/i18n";
 import { fmtHourNum, fromNow, nowKey, type Hour } from "@/lib/weather";
 import { wx } from "@/lib/weather-text";
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 
 type Win = { day: "today" | "tomorrow"; from: number; to: number };
 
@@ -27,12 +27,16 @@ function findWindows(list: Hour[], todayKey: string): Win[] {
   return out;
 }
 
-export default function SprayWindow({ hours, locale }: { hours: Hour[]; locale: Locale }) {
-  const [wins, setWins] = useState<Win[] | null>(null);
-
-  useEffect(() => {
+export default function SprayWindow({
+  hours,
+  locale,
+}: {
+  hours: Hour[];
+  locale: Locale;
+}) {
+  const wins = useMemo(() => {
     const key = nowKey();
-    setWins(findWindows(fromNow(hours, key, 24), key.slice(0, 10)));
+    return findWindows(fromNow(hours, key, 24), key.slice(0, 10));
   }, [hours]);
 
   return (
@@ -46,7 +50,8 @@ export default function SprayWindow({ hours, locale }: { hours: Hour[]; locale: 
             <ul className="mt-1 space-y-1 text-sm">
               {wins.slice(0, 3).map((w, i) => (
                 <li key={i} className="font-medium">
-                  {w.day === "today" ? wx.today[locale] : wx.tomorrow[locale]}: {fmtHourNum(w.from)} – {fmtHourNum(w.to)}
+                  {w.day === "today" ? wx.today[locale] : wx.tomorrow[locale]}:{" "}
+                  {fmtHourNum(w.from)} – {fmtHourNum(w.to)}
                 </li>
               ))}
             </ul>
