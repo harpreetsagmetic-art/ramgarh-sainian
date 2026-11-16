@@ -11,11 +11,6 @@ export default async function DonatePage({ params }: { params: Promise<{ locale:
   if (!isLocale(locale)) notFound();
   const t = getDictionary(locale);
 
-  const monthName = (m: string) =>
-    new Date(`${m}-01`).toLocaleDateString(locale === "pa" ? "pa-IN" : "en-IN", {
-      month: "long", year: "numeric", timeZone: "UTC",
-    });
-
   return (
     <>
       <PageBanner title={t.home.donateTitle} subtitle={t.home.donateText} />
