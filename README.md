@@ -1,40 +1,70 @@
-<<<<<<< HEAD
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Ramgarh Sainian | Village Website
+
+A fast, mobile-friendly, bilingual (Punjabi + English) website for Ramgarh Sainian village in Punjab, India. It gives villagers and the diaspora one place for village and gurdwara information.
+
+**Live site:** https://ramgarhsainian.site/
+
+## Features
+
+- Punjabi / English language switch
+- Village map page with an embedded drone-survey map and interactive zoom and pan
+- Live kirtan page and a daily Hukamnama link
+- Sikh (Nanakshahi) calendar with a countdown to upcoming gurpurabs and festivals
+- Live weather and air quality using the Open-Meteo API
+- Donation page, photo gallery, village history and contact page
+- Responsive design that works on phones, tablets and desktops
+
+## Tech Stack
+
+| Area | Technology |
+| --- | --- |
+| Framework | Next.js 16 (App Router) |
+| UI library | React 19 |
+| Language | TypeScript |
+| Styling | Tailwind CSS 4 |
+| Icons | Lucide React |
+| Map viewer | react-zoom-pan-pinch |
+| QR codes | qrcode.react |
+| Calendar data | nanakshahi-jantri |
+| Analytics | Vercel Analytics and Speed Insights |
+| Linting | ESLint |
 
 ## Getting Started
 
-First, run the development server:
+**Requirements:** Node.js 20 or later and npm.
 
 ```bash
+# 1. Clone the repository
+git clone https://github.com/harpreetsingh11/ramgarh-sainian.git
+cd ramgarh-sainian
+
+# 2. Install dependencies
+npm install
+
+# 3. Start the development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000 in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Available Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Command | Description |
+| --- | --- |
+| `npm run dev` | Start the development server |
+| `npm run build` | Create a production build |
+| `npm run start` | Run the production build |
+| `npm run lint` | Check the code with ESLint |
+| `npm run jantri:build` | Generate the Sikh calendar (jantri) data |
 
-## Learn More
+## Project Goals
 
-To learn more about Next.js, take a look at the following resources:
+- Keep the village's information easy to find and always up to date
+- Load quickly, even on slow mobile connections
+- Work well in both Punjabi and English
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Author
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Built by **Harpreet Singh**, a WooCommerce & WordPress developer who also builds modern web apps with Next.js and React.
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-=======
-# ramgarhsainian
->>>>>>> ef8009cefca37d3fd232e21085028fb8fc8d5b3d
+Open to freelance work. Find me on [Upwork](https://www.upwork.com/freelancers/~01e29127672fbbfed9).
