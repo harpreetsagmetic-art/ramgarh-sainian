@@ -1,11 +1,11 @@
 // Telegram Bot API se message bhejne ke chhote helpers (sirf server par).
 // Token sirf env se aata hai (TELEGRAM_BOT_TOKEN) aur kabhi log ya jawab mein nahi jaata.
+//
+// Message PLAIN TEXT bheje jaate hain (parse_mode nahi). Isliye WhatsApp ka *bold* / _italic_
+// Telegram mein sitaare/underscore ke saath dikhta hai, aur copy karke WhatsApp mein paste
+// karne par wahi formatting sahi chalti hai.
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
-
-// HTML parse mode ke liye zaroori: & < > ko badalna
-export const esc = (s: string) =>
-  s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
 export function chatIds(): string[] {
   return (process.env.TELEGRAM_CHAT_ID ?? "")
@@ -14,7 +14,7 @@ export function chatIds(): string[] {
     .filter(Boolean);
 }
 
-async function sendOne(chatId: string, html: string): Promise<void> {
+async function sendOne(chatId: string, text: string): Promise<void> {
   const token = process.env.TELEGRAM_BOT_TOKEN;
   if (!token) throw new Error("TELEGRAM_BOT_TOKEN set nahi hai");
 
@@ -26,8 +26,7 @@ async function sendOne(chatId: string, html: string): Promise<void> {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           chat_id: chatId,
-          text: html,
-          parse_mode: "HTML",
+          text,
           link_preview_options: { is_disabled: true },
         }),
         signal: AbortSignal.timeout(10_000),
@@ -54,49 +53,39 @@ async function sendOne(chatId: string, html: string): Promise<void> {
   throw new Error("Telegram ne bahut zyada requests ki wajah se roka");
 }
 
-// Har chat mein, ek-ek karke (har message ke beech ~1 second: Telegram ki limit ka khayal)
-export async function sendMessages(
-  messages: string[],
-): Promise<{ chats: number; sent: number }> {
+// Har chat mein message ek-ek karke (order wahi rehta hai, beech mein ~1 second).
+// Alag-alag chats ek saath chalte hain, taaki time (maxDuration) kam lage.
+export async function sendMessages(messages: string[]): Promise<{ chats: number; sent: number }> {
   const ids = chatIds();
   if (ids.length === 0) throw new Error("TELEGRAM_CHAT_ID set nahi hai");
 
+  const results = await Promise.allSettled(
+    ids.map(async (id) => {
+      let n = 0;
+      for (let i = 0; i < messages.length; i++) {
+        await sendOne(id, messages[i]);
+        n++;
+        if (i < messages.length - 1) await sleep(1100);
+      }
+      return n;
+    }),
+  );
+
   let sent = 0;
-  for (const id of ids) {
-    for (let i = 0; i < messages.length; i++) {
-      await sendOne(id, messages[i]);
-      sent++;
-      if (i < messages.length - 1) await sleep(1100);
-    }
-  }
+  const failed: string[] = [];
+  results.forEach((r, idx) => {
+    if (r.status === "fulfilled") sent += r.value;
+    else failed.push(`chat ${idx + 1}: ${r.reason instanceof Error ? r.reason.message : "pata nahi"}`);
+  });
+  if (failed.length) throw new Error(`Kuch chats mein nahi gaya (${sent} message gaye): ${failed.join("; ")}`);
+
   return { chats: ids.length, sent };
 }
 
-// Message bhejne se pehle jaanch (dry-run mein dikhti hai): tag theek band hue? lambai theek hai?
-const TAGS = ["b", "i", "u", "blockquote", "a"];
-
-export function validateHtml(html: string): string[] {
+// Message bhejne se pehle jaanch (dry-run mein dikhti hai)
+export function validateText(text: string): string[] {
   const problems: string[] = [];
-  const stack: string[] = [];
-  for (const m of html.matchAll(/<(\/?)([a-z]+)([^>]*)>/g)) {
-    const [, closing, name] = m;
-    if (!TAGS.includes(name)) {
-      problems.push(`anjaan tag <${name}>`);
-      continue;
-    }
-    if (!closing) stack.push(name);
-    else if (stack.pop() !== name)
-      problems.push(`</${name}> galat jagah band hua`);
-  }
-  if (stack.length) problems.push(`band nahi hue: ${stack.join(", ")}`);
-
-  const rendered = html
-    .replace(/<[^>]+>/g, "")
-    .replace(/&lt;/g, "<")
-    .replace(/&gt;/g, ">")
-    .replace(/&amp;/g, "&");
-  if (rendered.length > 4096)
-    problems.push(`bahut lamba: ${rendered.length} akshar (limit 4096)`);
-  if (rendered.trim().length === 0) problems.push("khaali message");
+  if (text.trim().length === 0) problems.push("khaali message");
+  if (text.length > 4096) problems.push(`bahut lamba: ${text.length} akshar (Telegram limit 4096)`);
   return problems;
 }
