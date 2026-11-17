@@ -1,4 +1,6 @@
-// Telegram ke liye sajaye hue (HTML) message: roz ka digest aur Hukamnama.
+// Telegram ke liye message: roz ka digest aur Hukamnama.
+// Format WhatsApp ka hai (*bold*, _italic_). Kam se kam messages, aur har message itna chhota
+// ki copy karke WhatsApp mein paste karne par "Read more" na aaye.
 // Sab kuch Punjabi mein; dihare ke naam ke neeche English bhi (SHOW_ENGLISH se band kar sakte ho).
 
 import { geo } from "./content";
@@ -6,7 +8,6 @@ import { istDate, toItems, type CalItem, type Kind } from "./gurpurab";
 import { guruNote } from "./gurus";
 import { loadHukamnama } from "./hukamnama";
 import { getDay } from "./jantri";
-import { esc } from "./telegram";
 import {
     aqiInfo,
     buildAlerts,
@@ -18,9 +19,14 @@ import {
 const SITE = (
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.ramgarhsainian.site"
 ).replace(/\/$/, "");
-const SHOW_ENGLISH = true;
-const LIMIT = 3800; // Telegram ki hadd 4096 hai, thoda khula chhodte hain
-const LINE = "━━━━━━━━━━━━━━";
+const SHOW_ENGLISH = true; // dihare ke naam ke neeche English
+const HUKAM_ENGLISH = false; // Hukamnama mein English meaning bhi chahiye? true karo (message badh jayenge)
+
+// Ek message ki lambai (akshar). WhatsApp "Read more" ki exact hadd khud nahi batata.
+// Apne phone par test karke sabse bada size dhundo jahan "Read more" nahi aata,
+// phir Vercel env WA_MSG_LIMIT mein wahi daalo. Jitna bada, utne kam message.
+const LIMIT =
+  Number(process.env.WA_MSG_LIMIT) > 0 ? Number(process.env.WA_MSG_LIMIT) : 600;
 
 const addDays = (iso: string, n: number) =>
   new Date(Date.parse(`${iso}T00:00:00Z`) + n * 86_400_000)
@@ -35,6 +41,57 @@ const pa = (iso: string, withYear = true) =>
     ...(withYear ? { year: "numeric" as const } : {}),
     timeZone: "UTC",
   });
+
+// Data ke andar * _ ~ ` aaye to WhatsApp ki formatting toot jaati hai, isliye hata dete hain.
+// (Gurbani ke tuk par ye kabhi nahi lagta: wo bina badle jaata hai.)
+const clean = (s: string) => s.replace(/[*_~`]/g, "").trim();
+
+// Blocks ko messages mein bharna: jitne LIMIT mein aa sakein, ek message mein.
+// Ek block kabhi beech se nahi tootta (jab tak wo akela hi LIMIT se bada na ho).
+//   head: pehle message ke shuru mein    foot: aakhri message ke ant mein
+//   sep: blocks ke beech    headSep: head aur blocks ke beech
+function pack(
+  blocks: string[],
+  opts: {
+    head?: string;
+    foot?: string;
+    sep?: string;
+    headSep?: string;
+    limit?: number;
+  } = {},
+): string[] {
+  const {
+    head = "",
+    foot = "",
+    sep = "\n",
+    headSep = "\n\n",
+    limit = LIMIT,
+  } = opts;
+  const out: string[] = [];
+  let cur: string[] = [];
+  let first = true;
+  const render = (arr: string[]) =>
+    (first && head ? head + headSep : "") + arr.join(sep);
+
+  for (const b of blocks) {
+    if (cur.length && render([...cur, b]).length > limit) {
+      out.push(render(cur));
+      first = false;
+      cur = [];
+    }
+    cur.push(b);
+  }
+  if (cur.length) out.push(render(cur));
+  else if (head) out.push(head);
+
+  if (foot) {
+    const last = out.length ? out[out.length - 1] : "";
+    if (last && (last + "\n\n" + foot).length <= limit)
+      out[out.length - 1] = last + "\n\n" + foot;
+    else out.push(foot);
+  }
+  return out;
+}
 
 const ICON: Record<Kind, string> = {
   gurpurab: "🪔",
@@ -52,63 +109,60 @@ const icon = (i: CalItem) =>
     : ICON[i.kind];
 
 function eventLine(i: CalItem): string {
-  const est = i.estimated ? " <i>(ਅੰਦਾਜ਼ਨ)</i>" : "";
+  const est = i.estimated ? " _(ਅੰਦਾਜ਼ਨ)_" : "";
   const en =
     SHOW_ENGLISH && i.name.en && i.name.en !== i.name.pa
-      ? `\n      <i>${esc(i.name.en)}</i>`
+      ? `\n_${clean(i.name.en)}_`
       : "";
-  return `${icon(i)} <b>${esc(i.name.pa)}</b>${est}${en}`;
+  return `${icon(i)} *${clean(i.name.pa)}*${est}${en}`;
 }
 
-// Guru sahiban wale dihare par ek "kholne wala" chhota parichay
-function guruBlock(items: CalItem[]): string {
+// Guru sahiban wale dihare par chhota parichay
+function guruBlock(items: CalItem[]): string[] {
   const it = items.find((i) => i.guru && i.kind === "gurpurab");
   const n = it ? guruNote(it.guru, "pa") : null;
-  return n
-    ? `<blockquote expandable><b>${esc(n.title)}</b> (${esc(n.years)})\n${esc(n.text)}</blockquote>`
-    : "";
+  if (!n) return [];
+  const sentences = (n.text.match(/[^।.!?]+[।.!?]*/g) ?? [n.text])
+    .map((s) => clean(s))
+    .filter(Boolean);
+  return pack(sentences, {
+    head: `📖 *${clean(n.title)}* (${clean(n.years)})`,
+    headSep: "\n",
+    sep: " ",
+  });
 }
 
 async function weatherBlock(): Promise<string> {
-  const w = await getWeather(geo.lat, geo.lon);
-  if (!w) return "";
-  const c = w.current;
-  const d0 = w.days[0];
-  const info = weatherInfo(c.code, c.isDay);
+  try {
+    const w = await getWeather(geo.lat, geo.lon);
+    if (!w) return "";
+    const c = w.current;
+    const d0 = w.days[0];
+    const info = weatherInfo(c.code, c.isDay);
 
-  const lines = [
-    `${info.emoji} <b>ਮੌਸਮ</b> · ${esc(info.text.pa)}`,
-    `🌡 ${Math.round(c.temp)}°C (ਮਹਿਸੂਸ ${Math.round(c.feels)}°) · ਅੱਜ ${Math.round(d0.min)}°–${Math.round(d0.max)}°`,
-    `🌧 ਮੀਂਹ ਦੀ ਸੰਭਾਵਨਾ ${Math.round(d0.rainProb)}% · 💨 ਹਵਾ ${Math.round(c.wind)} km/h`,
-  ];
-  if (w.aqi) {
-    lines.push(
-      `😷 ਹਵਾ ਦੀ ਗੁਣਵੱਤਾ: AQI ${Math.round(w.aqi.us)} · ${esc(aqiInfo(w.aqi.us).label.pa)}`,
-    );
-  }
-  lines.push(`🌅 ${fmtClock(d0.sunrise)} · 🌇 ${fmtClock(d0.sunset)}`);
-  for (const a of buildAlerts(w).slice(0, 2))
-    lines.push(`⚠️ ${esc(a.text.pa)}`);
-  return lines.join("\n");
-}
-
-// Lambe text ko Telegram ki hadd ke andar tukdon mein todna (har tukde mein khud ka band hone wala wrapper)
-function chunk(lines: string[], wrap: (body: string) => string): string[] {
-  const out: string[] = [];
-  let cur: string[] = [];
-  const size = (arr: string[]) => wrap(arr.join("\n\n")).length;
-  for (const l of lines) {
-    if (cur.length && size([...cur, l]) > LIMIT) {
-      out.push(wrap(cur.join("\n\n")));
-      cur = [];
+    const lines = [
+      `${info.emoji} *ਮੌਸਮ* · ${clean(info.text.pa)}`,
+      `🌡 ${Math.round(c.temp)}°C (ਮਹਿਸੂਸ ${Math.round(c.feels)}°) · ਅੱਜ ${Math.round(d0.min)}°–${Math.round(d0.max)}°`,
+      `🌧 ਮੀਂਹ ਦੀ ਸੰਭਾਵਨਾ ${Math.round(d0.rainProb)}% · 💨 ਹਵਾ ${Math.round(c.wind)} km/h`,
+    ];
+    if (w.aqi) {
+      lines.push(
+        `😷 ਹਵਾ ਦੀ ਗੁਣਵੱਤਾ: AQI ${Math.round(w.aqi.us)} · ${clean(aqiInfo(w.aqi.us).label.pa)}`,
+      );
     }
-    cur.push(l);
+    lines.push(`🌅 ${fmtClock(d0.sunrise)} · 🌇 ${fmtClock(d0.sunset)}`);
+    for (const a of buildAlerts(w).slice(0, 2))
+      lines.push(`⚠️ ${clean(a.text.pa)}`);
+    return lines.join("\n");
+  } catch {
+    // Mausam na mile to baaki digest phir bhi jaye
+    return "";
   }
-  if (cur.length) out.push(wrap(cur.join("\n\n")));
-  return out;
 }
 
 // ---------- 1) Roz ka digest ----------
+// Group: aaj (tareekh + dihare + Guru parichay), kal ka yaad patra, itihaas, mausam + link.
+// Har group ek saath rehta hai; chhote groups ek hi message mein jud jaate hain (jitna LIMIT de).
 export async function buildDigest(todayIso = istDate(0)): Promise<string[]> {
   const tomorrowIso = addDays(todayIso, 1);
   const [d0, d1] = await Promise.all([getDay(todayIso), getDay(tomorrowIso)]);
@@ -118,44 +172,50 @@ export async function buildDigest(todayIso = istDate(0)): Promise<string[]> {
   const todayHistory = todayAll.filter((i) => i.kind === "historical");
   const tomorrowAll = d1 ? toItems([d1]) : [];
 
-  const out: string[] = [];
-  out.push(
-    `🌅 <b>ਸਤਿ ਸ੍ਰੀ ਅਕਾਲ ਜੀ</b> 🙏\n<b>ਰਾਮਗੜ੍ਹ ਸੈਣੀਆਂ</b> · ਅੱਜ ਦੀ ਜਾਣਕਾਰੀ\n${LINE}`,
-  );
+  const groups: string[][] = [];
 
-  // Aaj ki tareekh
+  // Aaj
   const ns = d0?.nanakshahi;
-  out.push(
-    `📅 <b>${esc(pa(todayIso))}</b>` +
+  const head = [
+    `🙏 *ਸਤਿ ਸ੍ਰੀ ਅਕਾਲ ਜੀ*`,
+    `*ਰਾਮਗੜ੍ਹ ਸੈਣੀਆਂ* · ਅੱਜ ਦੀ ਜਾਣਕਾਰੀ`,
+    ``,
+    `📅 *${pa(todayIso)}*` +
       (ns
-        ? `\n🗓 ਨਾਨਕਸ਼ਾਹੀ ਸੰਮਤ ${ns.year} · <b>${ns.day} ${esc(ns.monthName.pa)}</b>`
+        ? `\n🗓 ਨਾਨਕਸ਼ਾਹੀ ਸੰਮਤ ${ns.year} · *${ns.day} ${clean(ns.monthName.pa)}*`
         : ""),
+    ``,
+    `🔔 *ਅੱਜ ਦੇ ਦਿਹਾੜੇ*`,
+  ].join("\n");
+  const todayBlocks = pack(
+    todayEvents.length
+      ? todayEvents.map(eventLine)
+      : ["_ਅੱਜ ਕੋਈ ਖ਼ਾਸ ਦਿਹਾੜਾ ਨਹੀਂ ਹੈ।_"],
+    {
+      head,
+      headSep: "\n",
+    },
   );
-
-  // Aaj ke dihare
-  out.push(
-    `🔔 <b>ਅੱਜ ਦੇ ਦਿਹਾੜੇ</b>\n` +
-      (todayEvents.length
-        ? todayEvents.map(eventLine).join("\n")
-        : "<i>ਅੱਜ ਕੋਈ ਖ਼ਾਸ ਦਿਹਾੜਾ ਨਹੀਂ ਹੈ।</i>") +
-      (guruBlock(todayEvents) ? `\n${guruBlock(todayEvents)}` : ""),
-  );
+  groups.push([...todayBlocks, ...guruBlock(todayEvents)]);
 
   // Kal ka dihara (ek din pehle yaad patra)
   if (tomorrowAll.length) {
     const tEvents = tomorrowAll.filter((i) => i.kind !== "historical");
     const tHistory = tomorrowAll.filter((i) => i.kind === "historical");
-    out.push(
-      `${LINE}\n⏰ <b>ਕੱਲ੍ਹ ਲਈ ਯਾਦ ਪੱਤਰ</b>\n<i>${esc(pa(tomorrowIso, false))}</i>\n` +
-        [...tEvents.map(eventLine), ...tHistory.map(eventLine)].join("\n") +
-        (guruBlock(tEvents) ? `\n${guruBlock(tEvents)}` : ""),
-    );
+    const tBlocks = pack([...tEvents, ...tHistory].map(eventLine), {
+      head: `⏰ *ਕੱਲ੍ਹ ਲਈ ਯਾਦ ਪੱਤਰ*\n_${pa(tomorrowIso, false)}_`,
+      headSep: "\n",
+    });
+    groups.push([...tBlocks, ...guruBlock(tEvents)]);
   }
 
   // Aaj ka itihaas (na ho to agle 7 din ka)
   if (todayHistory.length) {
-    out.push(
-      `${LINE}\n📜 <b>ਅੱਜ ਦਾ ਇਤਿਹਾਸ</b>\n${todayHistory.map(eventLine).join("\n")}`,
+    groups.push(
+      pack(todayHistory.map(eventLine), {
+        head: `📜 *ਅੱਜ ਦਾ ਇਤਿਹਾਸ*`,
+        headSep: "\n",
+      }),
     );
   } else {
     const soon: string[] = [];
@@ -165,32 +225,35 @@ export async function buildDigest(todayIso = istDate(0)): Promise<string[]> {
     for (const d of days) {
       if (!d) continue;
       for (const i of toItems([d]).filter((x) => x.kind === "historical")) {
-        soon.push(
-          `• <i>${esc(pa(d.gregorian, false))}</i> — ${esc(i.name.pa)}`,
-        );
+        soon.push(`• _${pa(d.gregorian, false)}_ — ${clean(i.name.pa)}`);
       }
     }
-    if (soon.length)
-      out.push(
-        `${LINE}\n📜 <b>ਆਉਣ ਵਾਲੇ ਦਿਨਾਂ ਦਾ ਇਤਿਹਾਸ</b>\n${soon.slice(0, 5).join("\n")}`,
+    if (soon.length) {
+      groups.push(
+        pack(soon.slice(0, 5), {
+          head: `📜 *ਆਉਣ ਵਾਲੇ ਦਿਨਾਂ ਦਾ ਇਤਿਹਾਸ*`,
+          headSep: "\n",
+        }),
       );
+    }
   }
 
-  // Mausam
+  // Mausam + link
   const wb = await weatherBlock();
-  if (wb) out.push(`${LINE}\n${wb}`);
+  const links =
+    `🌐 ਵੈੱਬਸਾਈਟ: ${SITE}/pa\n` +
+    `🔴 ਲਾਈਵ ਕੀਰਤਨ: ${SITE}/pa/live\n` +
+    `🗓 ਕੈਲੰਡਰ: ${SITE}/pa/calendar\n\n` +
+    `_ਵਾਹਿਗੁਰੂ ਜੀ ਕਾ ਖ਼ਾਲਸਾ, ਵਾਹਿਗੁਰੂ ਜੀ ਕੀ ਫ਼ਤਿਹ_ 🙏`;
+  groups.push(pack([wb, links].filter(Boolean), { sep: "\n\n" }));
 
-  // Neeche ke link
-  out.push(
-    `${LINE}\n🌐 <a href="${SITE}/pa">ਵੈੱਬਸਾਈਟ</a> · 🔴 <a href="${SITE}/pa/live">ਲਾਈਵ ਕੀਰਤਨ</a> · 🗓 <a href="${SITE}/pa/calendar">ਕੈਲੰਡਰ</a>\n` +
-      `<i>ਵਾਹਿਗੁਰੂ ਜੀ ਕਾ ਖ਼ਾਲਸਾ, ਵਾਹਿਗੁਰੂ ਜੀ ਕੀ ਫ਼ਤਿਹ</i> 🙏`,
-  );
-
-  // Ek hi message mein jitna aa jaye (fir naya message)
-  return chunk(out, (b) => b);
+  // Har group pehle apne andar ek message mein jodo, phir groups ko LIMIT tak ek saath bharo
+  const units = groups.flatMap((g) => pack(g, { sep: "\n\n" }));
+  return pack(units, { sep: "\n\n" });
 }
 
 // ---------- 2) Aaj ka Hukamnama ----------
+// Har tuk ke saath uska arth: message apne aap mein poora rehta hai.
 export async function buildHukamnama(
   force = false,
 ): Promise<{ messages: string[]; reason?: string }> {
@@ -204,48 +267,26 @@ export async function buildHukamnama(
   }
   const h = r.data;
 
-  const head =
-    `🙏 <b>ਅੱਜ ਦਾ ਹੁਕਮਨਾਮਾ</b>\nਸ੍ਰੀ ਹਰਿਮੰਦਰ ਸਾਹਿਬ, ਅੰਮ੍ਰਿਤਸਰ\n${LINE}\n` +
-    `📖 ਅੰਗ <b>${h.pageNo}</b>` +
-    (h.raag.pa ? ` · ${esc(h.raag.pa)}` : "") +
-    (h.writer ? ` · ${esc(h.writer)}` : "") +
-    `\n📅 ${esc(pa(h.date))}`;
+  const head = [
+    `🙏 *ਅੱਜ ਦਾ ਹੁਕਮਨਾਮਾ*`,
+    `ਸ੍ਰੀ ਹਰਿਮੰਦਰ ਸਾਹਿਬ, ਅੰਮ੍ਰਿਤਸਰ`,
+    `📖 ਅੰਗ *${h.pageNo}*` +
+      (h.raag.pa ? ` · ${clean(h.raag.pa)}` : "") +
+      (h.writer ? ` · ${clean(h.writer)}` : ""),
+    `📅 ${pa(h.date)}`,
+  ].join("\n");
 
-  const foot = `${LINE}\n🙏 <i>ਸਤਿਕਾਰ ਸਹਿਤ ਪੜ੍ਹੋ ਜੀ</i> · ਸਰੋਤ: BaniDB`;
+  const foot = `🙏 _ਸਤਿਕਾਰ ਸਹਿਤ ਪੜ੍ਹੋ ਜੀ_ · ਸਰੋਤ: BaniDB`;
 
-  // Gurbani bina badle, jaisi API se aayi (har tuk nayi line par)
-  const gurbani = chunk(
-    h.verses.map((v) => esc(v.gurmukhi)),
-    (b) => `<blockquote>${b.replace(/\n\n/g, "\n")}</blockquote>`,
-  );
+  // Gurbani bina badle (v.gurmukhi), uske neeche arth italic mein. Tuk aur uska arth kabhi alag nahi hote.
+  const blocks = h.verses.map((v) => {
+    const lines = [v.gurmukhi];
+    if (v.punjabi) lines.push(`_${clean(v.punjabi)}_`);
+    if (HUKAM_ENGLISH && v.english) lines.push(`_${clean(v.english)}_`);
+    return lines.join("\n");
+  });
 
-  const messages: string[] = gurbani.map((g, i) =>
-    i === 0 ? `${head}\n\n${g}\n\n${foot}` : g,
-  );
-
-  // Arth (kholne wale dibbe: pehle band, chhoone par khulte hain)
-  const arth = h.verses
-    .map((v) => v.punjabi)
-    .filter((x): x is string => !!x)
-    .map(esc);
-  const eng = h.verses
-    .map((v) => v.english)
-    .filter((x): x is string => !!x)
-    .map(esc);
-
-  for (const [title, lines] of [
-    ["📖 <b>ਅਰਥ</b>", arth],
-    ["🌐 <b>English meaning</b>", eng],
-  ] as const) {
-    if (lines.length === 0) continue;
-    messages.push(
-      ...chunk(
-        lines,
-        (b) =>
-          `${title}\n<blockquote expandable>${b.replace(/\n\n/g, "\n\n")}</blockquote>`,
-      ),
-    );
-  }
-
-  return { messages };
+  return {
+    messages: pack(blocks, { head, foot, sep: "\n\n", headSep: "\n\n" }),
+  };
 }
