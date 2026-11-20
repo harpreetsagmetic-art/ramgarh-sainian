@@ -1,6 +1,7 @@
 // Telegram ke liye message: roz ka digest aur Hukamnama.
-// Format WhatsApp ka hai (*bold*, _italic_). Kam se kam messages, aur har message itna chhota
+// Format WhatsApp ka hai (*bold*, _italic_). Digest kam se kam messages mein, har message itna chhota
 // ki copy karke WhatsApp mein paste karne par "Read more" na aaye.
+// Hukamnama hamesha ek hi message mein (lamba hone par WhatsApp mein "Read more" aa sakta hai).
 // Sab kuch Punjabi mein; dihare ke naam ke neeche English bhi (SHOW_ENGLISH se band kar sakte ho).
 
 import { geo } from "./content";
@@ -9,24 +10,27 @@ import { guruNote } from "./gurus";
 import { loadHukamnama } from "./hukamnama";
 import { getDay } from "./jantri";
 import {
-    aqiInfo,
-    buildAlerts,
-    fmtClock,
-    getWeather,
-    weatherInfo,
+  aqiInfo,
+  buildAlerts,
+  fmtClock,
+  getWeather,
+  weatherInfo,
 } from "./weather";
 
 const SITE = (
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.ramgarhsainian.site"
 ).replace(/\/$/, "");
 const SHOW_ENGLISH = true; // dihare ke naam ke neeche English
-const HUKAM_ENGLISH = false; // Hukamnama mein English meaning bhi chahiye? true karo (message badh jayenge)
+const HUKAM_ENGLISH = false; // Hukamnama mein English meaning bhi chahiye? true karo (message lamba hoga)
 
-// Ek message ki lambai (akshar). WhatsApp "Read more" ki exact hadd khud nahi batata.
+// Digest ke ek message ki lambai (akshar). WhatsApp "Read more" ki exact hadd khud nahi batata.
 // Apne phone par test karke sabse bada size dhundo jahan "Read more" nahi aata,
 // phir Vercel env WA_MSG_LIMIT mein wahi daalo. Jitna bada, utne kam message.
 const LIMIT =
   Number(process.env.WA_MSG_LIMIT) > 0 ? Number(process.env.WA_MSG_LIMIT) : 600;
+
+// Hukamnama ek message mein: Telegram ki hadd 4096 hai, thoda khula chhodte hain
+const HUKAM_LIMIT = 4000;
 
 const addDays = (iso: string, n: number) =>
   new Date(Date.parse(`${iso}T00:00:00Z`) + n * 86_400_000)
@@ -46,8 +50,8 @@ const pa = (iso: string, withYear = true) =>
 // (Gurbani ke tuk par ye kabhi nahi lagta: wo bina badle jaata hai.)
 const clean = (s: string) => s.replace(/[*_~`]/g, "").trim();
 
-// Blocks ko messages mein bharna: jitne LIMIT mein aa sakein, ek message mein.
-// Ek block kabhi beech se nahi tootta (jab tak wo akela hi LIMIT se bada na ho).
+// Blocks ko messages mein bharna: jitne limit mein aa sakein, ek message mein.
+// Ek block kabhi beech se nahi tootta (jab tak wo akela hi limit se bada na ho).
 //   head: pehle message ke shuru mein    foot: aakhri message ke ant mein
 //   sep: blocks ke beech    headSep: head aur blocks ke beech
 function pack(
@@ -253,7 +257,9 @@ export async function buildDigest(todayIso = istDate(0)): Promise<string[]> {
 }
 
 // ---------- 2) Aaj ka Hukamnama ----------
-// Har tuk ke saath uska arth: message apne aap mein poora rehta hai.
+// Ek hi message: har tuk ke neeche uska arth (italic). Gurbani bina badle.
+// Agar Telegram ki hadd (4096) se bada ho, to pehle English hataya jaata hai, phir Punjabi arth.
+// Message kabhi tukdon mein nahi todta.
 export async function buildHukamnama(
   force = false,
 ): Promise<{ messages: string[]; reason?: string }> {
@@ -278,15 +284,25 @@ export async function buildHukamnama(
 
   const foot = `🙏 _ਸਤਿਕਾਰ ਸਹਿਤ ਪੜ੍ਹੋ ਜੀ_ · ਸਰੋਤ: BaniDB`;
 
-  // Gurbani bina badle (v.gurmukhi), uske neeche arth italic mein. Tuk aur uska arth kabhi alag nahi hote.
-  const blocks = h.verses.map((v) => {
-    const lines = [v.gurmukhi];
-    if (v.punjabi) lines.push(`_${clean(v.punjabi)}_`);
-    if (HUKAM_ENGLISH && v.english) lines.push(`_${clean(v.english)}_`);
-    return lines.join("\n");
-  });
+  // Hamesha ek hi message. Kabhi tukde nahi.
+  const make = (withPunjabi: boolean, withEnglish: boolean) =>
+    [
+      head,
+      h.verses
+        .map((v) => {
+          const lines = [v.gurmukhi];
+          if (withPunjabi && v.punjabi) lines.push(`_${clean(v.punjabi)}_`);
+          if (withEnglish && v.english) lines.push(`_${clean(v.english)}_`);
+          return lines.join("\n");
+        })
+        .join("\n\n"),
+      foot,
+    ].join("\n\n");
 
-  return {
-    messages: pack(blocks, { head, foot, sep: "\n\n", headSep: "\n\n" }),
-  };
+  let text = make(true, HUKAM_ENGLISH);
+  if (text.length > HUKAM_LIMIT && HUKAM_ENGLISH) text = make(true, false);
+  if (text.length > HUKAM_LIMIT) text = make(false, false);
+
+  console.log("[telegram] hukamnama: 1 message,", text.length, "chars");
+  return { messages: [text] };
 }
